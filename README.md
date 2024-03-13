@@ -6,7 +6,6 @@
 - [ ] Room
 - [ ] Coroutine
 - [ ] Flow
-- [ ] Hilt
 
 ### #필수기능 구현
 - [ ] todo 아이템 C,R,U,D
@@ -20,3 +19,8 @@
   - [ ] Hilt 사용
 - [ ] gradle 의존성 관리
 - [ ] ViewModel
+- [ ] 로그인 - 개인화
+- [ ] Firebase
+- [ ] Notification
+- [ ] Service(포모도르 타이머 같은 것)
+
