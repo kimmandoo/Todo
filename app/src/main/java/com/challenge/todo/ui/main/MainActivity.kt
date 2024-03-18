@@ -1,4 +1,4 @@
-package com.challenge.todo
+package com.challenge.todo.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,9 +19,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        binding.registBtn.setOnClickListener {
-            Toast.makeText(this,"클릭 되었습니다",Toast.LENGTH_SHORT).show()
-        }
+//        binding.registBtn.setOnClickListener {
+//            Toast.makeText(this,"클릭 되었습니다",Toast.LENGTH_SHORT).show()
+//        }
+
 
     }
 }
