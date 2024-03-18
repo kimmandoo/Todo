@@ -13,7 +13,16 @@
         android:theme="@style/Theme.Todo"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.todo_update.UpdateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.todo_detail.DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.todo_add.AddActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
