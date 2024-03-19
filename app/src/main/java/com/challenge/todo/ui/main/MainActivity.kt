@@ -5,6 +5,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.challenge.todo.R
+import com.challenge.todo.data.dto.Todo
+import com.challenge.todo.data.dto.TodoState
 import com.challenge.todo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -24,18 +26,21 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             adapter?.submitList(
                 arrayListOf(
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa",
-                    "aaaa", "aaaa", "aaaa", "aaaa", "aaaa", "aaaa"
+                    Todo("Title", "content","" ,TodoState.TODO),
+                    Todo("Title", null,"", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
+                    Todo("Title", "content","", TodoState.TODO),
                 )
             )
 

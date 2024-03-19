@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Todo</string>
+    <string name="option_done">Done</string>
+    <string name="option_all">All</string>
+    <string name="todo">Todo</string>
 </resources>

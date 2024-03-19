@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ItemTodoMainBinding
 
-class TodoAdapter() : ListAdapter<String, RecyclerView.ViewHolder>(TodoDiffUtil) {
+class TodoAdapter() : ListAdapter<Todo, RecyclerView.ViewHolder>(TodoDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemTodoMainBinding.inflate(inflater, parent, false)
@@ -22,12 +23,12 @@ class TodoAdapter() : ListAdapter<String, RecyclerView.ViewHolder>(TodoDiffUtil)
 
     override fun getItemCount() = currentList.size
 
-    companion object TodoDiffUtil : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+    companion object TodoDiffUtil : DiffUtil.ItemCallback<Todo>() {
+        override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
             return oldItem == newItem
         }
     }
