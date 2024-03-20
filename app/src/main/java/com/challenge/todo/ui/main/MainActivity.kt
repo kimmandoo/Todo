@@ -1,17 +1,13 @@
 package com.challenge.todo.ui.main
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.room.Room
 import com.challenge.todo.R
-import com.challenge.todo.data.datasource.TodoDatabase
+import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
-import com.challenge.todo.data.entity.TodoEntity
 import com.challenge.todo.databinding.ActivityMainBinding
-import com.challenge.todo.util.timeStamp
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,20 +18,28 @@ class MainActivity : AppCompatActivity() {
             it.adapter = todoAdapter
         }
     }
-
-    val db = Room.databaseBuilder(applicationContext, TodoDatabase::class.java, "todo").build()
-
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         binding.apply {
-            mainAppBar.setOnClickListener {
-                db.todoDao().insert(TodoEntity(null,"title", "content", timeStamp() ,0))
-                adapter?.submitList(db.todoDao().getAll().map { Todo(it.title, it.content, it.date!!, it.state) })
+            viewModel.getListFromRoomDB(todoDao = todoDBInstance.todoDao())
+            lifecycleOwner?.let { lifecycleOwner ->
+                viewModel.todoList.observe(lifecycleOwner) { todoList ->
+                    adapter?.submitList(todoList)
+                }
             }
-            adapter?.submitList(db.todoDao().getAll().map { Todo(it.title, it.content, it.date!!, it.state) })
 
+            mainFab.setOnClickListener {
+                viewModel.insertTodoItem(
+                    todoDao = todoDBInstance.todoDao(),
+                    Todo("title", "content")
+                )
+            }
         }
+    }
+
+    private fun init() {
     }
 }

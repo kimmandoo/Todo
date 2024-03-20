@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ItemTodoMainBinding
 
-class TodoAdapter() : ListAdapter<Todo, RecyclerView.ViewHolder>(TodoDiffUtil) {
+class TodoAdapter() : ListAdapter<Todo, RecyclerView.ViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemTodoMainBinding.inflate(inflater, parent, false)
@@ -16,20 +16,22 @@ class TodoAdapter() : ListAdapter<Todo, RecyclerView.ViewHolder>(TodoDiffUtil) {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(holder is TodoViewHolder) {
+        if (holder is TodoViewHolder) {
             holder.bind(currentList[position])
         }
     }
 
     override fun getItemCount() = currentList.size
 
-    companion object TodoDiffUtil : DiffUtil.ItemCallback<Todo>() {
-        override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-            return oldItem == newItem
-        }
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Todo>() {
+            override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+                return oldItem == newItem
+            }
 
-        override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-            return oldItem == newItem
+            override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 }

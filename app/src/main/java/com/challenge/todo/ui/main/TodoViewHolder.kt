@@ -1,6 +1,7 @@
 package com.challenge.todo.ui.main
 
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ItemTodoMainBinding
@@ -10,6 +11,9 @@ class TodoViewHolder(private val binding: ItemTodoMainBinding) :
     fun bind(item: Todo) {
         binding.apply {
             with(item) {
+                itemTodo.setOnClickListener {
+                    Toast.makeText(binding.root.context, this.date, Toast.LENGTH_SHORT).show()
+                }
                 itemTvTitle.apply {
                     text = title
                 }

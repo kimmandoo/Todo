@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="vm"
+            type="com.challenge.todo.ui.main.MainViewModel" />
         <variable
             name="adapter"
             type="com.challenge.todo.ui.main.TodoAdapter" />
@@ -48,6 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adapter="@{adapter}"
+                tools:listitem="@layout/item_todo_main"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
@@ -56,7 +59,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:id="@+id/main_fab"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="fab" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

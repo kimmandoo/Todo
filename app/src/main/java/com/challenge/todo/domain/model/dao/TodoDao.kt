@@ -1,4 +1,4 @@
-package com.challenge.todo.model.dao
+package com.challenge.todo.domain.model.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
