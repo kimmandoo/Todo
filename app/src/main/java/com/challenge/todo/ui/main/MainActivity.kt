@@ -3,6 +3,7 @@ package com.challenge.todo.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -12,7 +13,9 @@ import com.challenge.todo.R
 import com.challenge.todo.data.ToDoAdapter
 import com.challenge.todo.data.ToDoItem
 import com.challenge.todo.databinding.ActivityMainBinding
+import com.challenge.todo.ui.todo_detail.TodoDetailDialog
 
+private const val TAG = "MainActivity";
 class MainActivity : AppCompatActivity() {
 
     private val binding : ActivityMainBinding by lazy {
@@ -30,10 +33,15 @@ class MainActivity : AppCompatActivity() {
         val toDoItemList : MutableList<ToDoItem> =
             mutableListOf(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
 
-        adapter.submitList(toDoItemList)
+        Log.d(TAG, "onCreate: $toDoItemList")
+
         recycler.adapter = adapter
 
 
+        binding.createTodoBtn.setOnClickListener {
+            val dlg = TodoDetailDialog(this)
+            dlg.show(null)
+        }
 
     }
 
@@ -47,15 +55,15 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             /** 전체 보기 */
             R.id.view_all -> {
-
+                Toast.makeText(this, "all",Toast.LENGTH_SHORT ).show()
             }
             /** 할일 보기 */
             R.id.view_todo -> {
-
+                Toast.makeText(this, "todo",Toast.LENGTH_SHORT ).show()
             }
             /** 완료 목록 보기 */
             R.id.view_done -> {
-
+                Toast.makeText(this, "done",Toast.LENGTH_SHORT ).show()
             }
         }
         return super.onOptionsItemSelected(item)
