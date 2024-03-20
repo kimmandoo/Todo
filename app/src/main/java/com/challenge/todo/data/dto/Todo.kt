@@ -4,11 +4,11 @@ data class Todo(
     val title: String,
     val content: String? =null,
     val date: String,
-    val state: TodoState
+    val state: Int
 )
 
-enum class TodoState{
-    TODO,
-    DONE,
-    ALL
+enum class TodoState(state: Int){
+    TODO(0),
+    DONE(1),
+    ALL(2)
 }

@@ -9,8 +9,9 @@ import androidx.room.Room
 import com.challenge.todo.R
 import com.challenge.todo.data.datasource.TodoDatabase
 import com.challenge.todo.data.dto.Todo
-import com.challenge.todo.data.dto.TodoState
+import com.challenge.todo.data.entity.TodoEntity
 import com.challenge.todo.databinding.ActivityMainBinding
+import com.challenge.todo.util.timeStamp
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,35 +23,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    companion object : Application() {
-        val db = Room.databaseBuilder(applicationContext, TodoDatabase::class.java, "todo").build()
-    }
+    val db = Room.databaseBuilder(applicationContext, TodoDatabase::class.java, "todo").build()
 
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding.apply {
-            adapter?.submitList(
-                arrayListOf(
-                    Todo("Title", "content","" ,TodoState.TODO),
-                    Todo("Title", null,"", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                    Todo("Title", "content","", TodoState.TODO),
-                )
-            )
+            mainAppBar.setOnClickListener {
+                db.todoDao().insert(TodoEntity(null,"title", "content", timeStamp() ,0))
+                adapter?.submitList(db.todoDao().getAll().map { Todo(it.title, it.content, it.date!!, it.state) })
+            }
+            adapter?.submitList(db.todoDao().getAll().map { Todo(it.title, it.content, it.date!!, it.state) })
 
         }
     }

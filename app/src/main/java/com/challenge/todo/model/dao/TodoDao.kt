@@ -5,23 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.challenge.todo.data.dto.Todo
+import com.challenge.todo.data.entity.TodoEntity
 
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todo")
-    fun getAll(): List<Todo>
+    fun getAll(): List<TodoEntity>
 
-    @Query("SELECT * FROM todo WHERE id")
-    fun getTodo(id: Int): Todo
+    @Query("SELECT * FROM todo WHERE id=:id")
+    fun getTodo(id: Int): TodoEntity
 
     @Insert
-    fun insert(todo: Todo)
+    fun insert(todoEntity: TodoEntity)
 
     @Update
-    fun update(todo: Todo)
+    fun update(todoEntity: TodoEntity)
 
     @Delete
-    fun delete(todo: Todo)
+    fun delete(todoEntity: TodoEntity)
 
 }
