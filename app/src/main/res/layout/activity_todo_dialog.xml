@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +10,7 @@
     >
 
     <EditText
-        android:id="@+id/textView2"
+        android:id="@+id/detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="TodoList 제목을 입력하세요"
@@ -18,30 +21,49 @@
     </EditText>
 
     <EditText
-        android:id="@+id/textView3"
+        android:id="@+id/detail_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint ="TodoList 내용을 입력하세요"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/detail_title" />
 
     <Button
         android:id="@+id/update_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="수정"
+        android:visibility="gone"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cancle_btn"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+    <Button
+        android:id="@+id/regist_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="등록"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cancle_btn1"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+    <Button
+    android:id="@+id/cancle_btn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="취소" android:visibility="gone"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/update_btn"
+    app:layout_constraintTop_toBottomOf="@+id/detail_content" />
 
     <Button
-        android:id="@+id/cancle_btn"
+        android:id="@+id/cancle_btn1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="취소"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/update_btn"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintStart_toEndOf="@+id/regist_btn"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
