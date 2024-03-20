@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.challenge.todo.R
 import com.challenge.todo.databinding.ActivityDetailBinding
+import com.challenge.todo.ui.main.MainActivity
 
 class DetailActivity : AppCompatActivity() {
     private val binding by lazy {
