@@ -17,6 +17,10 @@ class ToDoAdapter() : ListAdapter<ToDoItem, ToDoAdapter.ToDoViewHolder>(ToDoComp
                 todoIndex.text = position.toString()
                 todoTitle.text = item.title
                 todoContent.text = item.content
+
+                with(item){
+
+                }
             }
         }
     }

@@ -7,6 +7,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.challenge.todo.R
@@ -22,11 +25,13 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private lateinit var viewModel: MainViewModel
+    private val items = MutableLiveData<List<ToDoItem>>()
     private lateinit var recycler: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
+        binding.lifecycleOwner = this
         recycler = binding.toDoListRecyclerview
 
         val adapter = ToDoAdapter()
@@ -37,11 +42,21 @@ class MainActivity : AppCompatActivity() {
 
         recycler.adapter = adapter
 
+//        val dataObserver: Observer<List<ToDoItem>> = Observer {
+//            items.value = it
+//            val adapter = ToDoAdapter()
+//            recycler.adapter = adapter
+//        }
+
+//        viewModel.toDoList.observe(this, dataObserver)
+
+//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         binding.createTodoBtn.setOnClickListener {
             val dlg = TodoDetailDialog(this)
             dlg.show(null)
         }
+
 
     }
 
