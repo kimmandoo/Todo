@@ -8,22 +8,17 @@ import com.challenge.todo.R
 import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ActivityMainBinding
+import com.challenge.todo.ui.base.BaseActivity
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.activity_main) {
     private val todoAdapter by lazy { TodoAdapter() }
-    private val binding: ActivityMainBinding by lazy {
-        DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).also {
-            it.lifecycleOwner = this
-            it.adapter = todoAdapter
-        }
-    }
-    private val viewModel: MainViewModel by viewModels()
+    override val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initView() {
         val todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         binding.apply {
+            adapter = todoAdapter
             viewModel.getListFromRoomDB(todoDao = todoDBInstance.todoDao())
             lifecycleOwner?.let { lifecycleOwner ->
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
@@ -38,8 +33,5 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-    }
-
-    private fun init() {
     }
 }

@@ -1,23 +1,16 @@
 package com.challenge.todo.ui.detail
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import androidx.databinding.DataBindingUtil
+import androidx.activity.viewModels
 import com.challenge.todo.R
 import com.challenge.todo.databinding.ActivityDetailBinding
-import com.challenge.todo.ui.main.MainActivity
+import com.challenge.todo.ui.base.BaseActivity
 
-class DetailActivity : AppCompatActivity() {
-    private val binding by lazy {
-        DataBindingUtil.setContentView<ActivityDetailBinding>(this, R.layout.activity_detail).also {
-            it.lifecycleOwner = this
-        }
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class DetailActivity :
+    BaseActivity<ActivityDetailBinding, DetailViewModel>(R.layout.activity_detail) {
+    override val viewModel: DetailViewModel by viewModels()
+    override fun initView() {
         binding.apply {
 
         }
-
     }
 }
