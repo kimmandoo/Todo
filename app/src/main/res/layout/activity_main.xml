@@ -7,6 +7,7 @@
         <variable
             name="vm"
             type="com.challenge.todo.ui.main.MainViewModel" />
+
         <variable
             name="adapter"
             type="com.challenge.todo.ui.main.TodoAdapter" />
@@ -18,6 +19,7 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/main_app_bar"
+            android:layout_marginBottom="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +44,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="4dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:context=".ui.main.MainActivity">
 
@@ -50,23 +53,24 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adapter="@{adapter}"
-                tools:listitem="@layout/item_todo_main"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_todo_main" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
             android:id="@+id/main_fab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
             android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
             android:contentDescription="fab" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
