@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:menu="@menu/option_menu">
+                app:menu="@menu/menu_option">
 
                 <TextView
                     android:layout_width="wrap_content"

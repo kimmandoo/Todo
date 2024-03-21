@@ -7,6 +7,6 @@
         android:id="@+id/option_todo"
         android:title="@string/todo" />
     <item
-        android:id="@+id/all"
+        android:id="@+id/option_all"
         android:title="@string/option_all" />
 </menu>
