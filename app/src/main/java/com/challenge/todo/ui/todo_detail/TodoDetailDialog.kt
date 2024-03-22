@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.challenge.todo.data.ToDoItem
 import com.challenge.todo.databinding.ActivityTodoDialogBinding
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 class TodoDetailDialog(private val context: AppCompatActivity) {
 
@@ -39,6 +42,16 @@ class TodoDetailDialog(private val context: AppCompatActivity) {
         //등록
         binding.registBtn.setOnClickListener{
             Toast.makeText(context,"등록",Toast.LENGTH_SHORT).show()
+            val toDoItem : ToDoItem = ToDoItem(
+                binding.detailTitle.text.toString(),
+                binding.detailContent.text.toString(),
+                LocalDateTime.now().toString(),
+                null,
+                false
+            )
+            onClickListner.onRegistClick(toDoItem)
+
+
             dlg.dismiss()
         }
 
@@ -63,6 +76,13 @@ class TodoDetailDialog(private val context: AppCompatActivity) {
         dlg.show()
     }
 
+    private lateinit var onClickListner: ButtonClickListner
+    interface ButtonClickListner {
+        fun onRegistClick(toDoItem: ToDoItem)
+    }
 
+    fun setOnClickListner(listner: ButtonClickListner){
+        onClickListner = listner
+    }
 
 }
