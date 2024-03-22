@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.todo.databinding.TodoItemBinding
 
-class ToDoAdapter() : ListAdapter<ToDoItem, ToDoAdapter.ToDoViewHolder>(ToDoComporator()){
+class ToDoAdapter(private var toDoList : MutableList<ToDoItem>,
+                  val onClickCheckButton : (toDoItem : ToDoItem) -> Unit)
+    : RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder>() {
 
     class ToDoViewHolder(val binding: TodoItemBinding) : RecyclerView.ViewHolder(binding.root){
         fun bindInfo(item : ToDoItem){
@@ -17,10 +19,6 @@ class ToDoAdapter() : ListAdapter<ToDoItem, ToDoAdapter.ToDoViewHolder>(ToDoComp
                 todoIndex.text = position.toString()
                 todoTitle.text = item.title
                 todoContent.text = item.content
-
-                with(item){
-
-                }
             }
         }
     }
@@ -36,15 +34,30 @@ class ToDoAdapter() : ListAdapter<ToDoItem, ToDoAdapter.ToDoViewHolder>(ToDoComp
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = TodoItemBinding.inflate(inflater, parent,false)
-        return ToDoViewHolder(binding)
+    fun setData(newData : MutableList<ToDoItem>){
+        toDoList = newData
+        notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
-        holder.bindInfo(currentList[position])
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = TodoItemBinding.inflate(inflater, parent,false)
+        return ToDoViewHolder(view)
     }
+
+    override fun getItemCount(): Int = toDoList.size
+
+    override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
+        holder.bindInfo(toDoList[position])
+
+        holder.binding.floatingActionButton1.apply {
+            setOnClickListener {
+                onClickCheckButton.invoke(toDoList[position])
+            }
+            check(true)
+        }
+    }
+
 
 
 }
