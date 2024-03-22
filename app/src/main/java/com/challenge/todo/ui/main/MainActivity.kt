@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.challenge.todo.R
@@ -17,6 +19,7 @@ import com.challenge.todo.data.ToDoAdapter
 import com.challenge.todo.data.ToDoItem
 import com.challenge.todo.databinding.ActivityMainBinding
 import com.challenge.todo.ui.todo_detail.TodoDetailDialog
+import java.time.LocalDateTime
 
 private const val TAG = "MainActivity";
 class MainActivity : AppCompatActivity() {
@@ -25,22 +28,30 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private lateinit var viewModel: MainViewModel
-    private val items = MutableLiveData<List<ToDoItem>>()
-    private lateinit var recycler: RecyclerView
+    private val viewModel: MainViewModel by viewModels()
+    private val todoList = arrayListOf<ToDoItem>(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
+
+    private val recycler: RecyclerView by lazy {
+        binding.toDoListRecyclerview
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.lifecycleOwner = this
-        recycler = binding.toDoListRecyclerview
 
-        val adapter = ToDoAdapter()
+
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = ToDoAdapter(todoList, onClickCheckButton = {
+            viewModel.checkButton(it)
+        } )
+
         val toDoItemList : MutableList<ToDoItem> =
             mutableListOf(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
 
         Log.d(TAG, "onCreate: $toDoItemList")
 
-        recycler.adapter = adapter
+        viewModel._toDoList.observe(this, Observer {
+            (binding.toDoListRecyclerview.adapter as ToDoAdapter).setData(it)
+        })
 
 //        val dataObserver: Observer<List<ToDoItem>> = Observer {
 //            items.value = it
@@ -54,8 +65,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.createTodoBtn.setOnClickListener {
             val dlg = TodoDetailDialog(this)
+            dlg.setOnClickListner(
+                object : TodoDetailDialog.ButtonClickListner{
+                    override fun onRegistClick(toDoItem: ToDoItem) {
+                        todoList.add(toDoItem)
+                        recycler.adapter?.notifyDataSetChanged()
+                    }
+
+                }
+            )
             dlg.show(null)
         }
+
+
 
 
     }
