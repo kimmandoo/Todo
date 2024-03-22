@@ -3,6 +3,7 @@ package com.challenge.todo.ui.main
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -11,6 +12,8 @@ import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ActivityMainBinding
 import com.challenge.todo.ui.base.BaseActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 private const val TAG = "MainActivity"
 
@@ -20,22 +23,19 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
             showTodoDetail(todo)
         })
     }
-
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     override val viewModel: MainViewModel by viewModels()
 
     override fun initView() {
         val todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
+        initUI()
         binding.apply {
-            adapter = todoAdapter
-            setSupportActionBar(mainToolbar)
-
             viewModel.getListFromRoomDB(todoDao = todoDBInstance.todoDao())
             lifecycleOwner?.let { lifecycleOwner ->
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
                     adapter?.submitList(todoList)
                 }
             }
-
             mainFab.setOnClickListener {
                 viewModel.insertTodoItem(
                     todoDao = todoDBInstance.todoDao(),
@@ -46,7 +46,20 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
     }
 
     private fun showTodoDetail(todo: Todo) {
+        bottomSheetDialog.show()
+        bottomSheetDialog.findViewById<TextView>(R.id.bottomsheet)?.text = todo.toString()
         Toast.makeText(this, todo.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun initUI(){
+        binding.apply {
+            val bottomSheetView = layoutInflater.inflate(R.layout.bottomsheet_detail, null)
+            bottomSheetDialog = BottomSheetDialog(this@MainActivity)
+            bottomSheetDialog.setContentView(bottomSheetView)
+            bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            adapter = todoAdapter
+            setSupportActionBar(mainToolbar)
+        }
     }
 
     private val request =
