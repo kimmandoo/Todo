@@ -49,11 +49,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val lifecycle_version = "2.7.0"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     // ksp
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.10-1.0.13")
     // coroutine

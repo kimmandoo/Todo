@@ -4,7 +4,7 @@ data class ToDoItem (
     val title : String,
     val content : String,
     val registerDate : String,
-    val dueDate : String,
-    val isDone : Boolean ){
+    var dueDate : String?,
+    var isDone : Boolean ){
 
 }
