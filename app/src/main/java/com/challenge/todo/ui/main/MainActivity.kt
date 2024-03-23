@@ -3,15 +3,16 @@ package com.challenge.todo.ui.main
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.challenge.todo.R
+import com.challenge.todo.data.datasource.TodoDatabase
 import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ActivityMainBinding
+import com.challenge.todo.databinding.BottomsheetDetailBinding
 import com.challenge.todo.ui.base.BaseActivity
+import com.challenge.todo.util.easyToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -23,11 +24,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
             showTodoDetail(todo)
         })
     }
-    private lateinit var bottomSheetDialog: BottomSheetDialog
     override val viewModel: MainViewModel by viewModels()
-
+    lateinit var todoDBInstance: TodoDatabase
     override fun initView() {
-        val todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
+        todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         initUI()
         binding.apply {
             viewModel.getListFromRoomDB(todoDao = todoDBInstance.todoDao())
@@ -39,24 +39,43 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
             mainFab.setOnClickListener {
                 viewModel.insertTodoItem(
                     todoDao = todoDBInstance.todoDao(),
-                    Todo("title", "content")
+                    Todo(null, "title", "content")
                 )
             }
         }
     }
 
     private fun showTodoDetail(todo: Todo) {
-        bottomSheetDialog.show()
-        bottomSheetDialog.findViewById<TextView>(R.id.bottomsheet)?.text = todo.toString()
-        Toast.makeText(this, todo.toString(), Toast.LENGTH_SHORT).show()
+        val bottomSheetView = BottomsheetDetailBinding.inflate(layoutInflater)
+        val bottomSheetDialog = BottomSheetDialog(this@MainActivity)
+        bottomSheetDialog.apply {
+            setContentView(bottomSheetView.root)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }.show()
+        bottomSheetView.apply {
+            val textStamp = "${todo.date}에 등록된 메모입니다 : ${todo.state}"
+            bsTvState.text = textStamp
+            bsTitle.setText(todo.title)
+            bsDetail.setText(todo.content)
+            easyToast(todo.toString())
+            bsBtnModify.setOnClickListener {
+                viewModel.updateTodoItem(
+                    todoDao = todoDBInstance.todoDao(),
+                    Todo(
+                        todo.id,
+                        bsTitle.text.toString(),
+                        bsDetail.text.toString(),
+                        todo.date,
+                        todo.state
+                    )
+                )
+                bottomSheetDialog.dismiss()
+            }
+        }
     }
 
-    private fun initUI(){
+    private fun initUI() {
         binding.apply {
-            val bottomSheetView = layoutInflater.inflate(R.layout.bottomsheet_detail, null)
-            bottomSheetDialog = BottomSheetDialog(this@MainActivity)
-            bottomSheetDialog.setContentView(bottomSheetView)
-            bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
             adapter = todoAdapter
             setSupportActionBar(mainToolbar)
         }

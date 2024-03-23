@@ -1,6 +1,7 @@
 package com.challenge.todo.data.dto
 
 data class Todo(
+    val id: Int?,
     val title: String,
     val content: String? = null,
     val date: String? = null,

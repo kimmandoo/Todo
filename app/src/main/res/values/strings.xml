@@ -3,4 +3,7 @@
     <string name="option_done">Done</string>
     <string name="option_all">All</string>
     <string name="todo">Todo</string>
+    <string name="todo_title_hint">할 일</string>
+    <string name="todo_detail_hint">내용</string>
+    <string name="bs_btn_modify">수정</string>
 </resources>
