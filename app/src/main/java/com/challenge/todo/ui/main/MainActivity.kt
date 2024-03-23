@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = ToDoAdapter(todoList, onClickCheckButton = {
             viewModel.checkButton(it)
-        } )
+        },menuInflater,this )
 
         val toDoItemList : MutableList<ToDoItem> =
             mutableListOf(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
