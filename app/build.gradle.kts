@@ -50,6 +50,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+
     // ksp
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.10-1.0.13")
     // coroutine
@@ -62,4 +64,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
+    //viewModel
+    val activity_version = "1.8.2"
+    implementation("androidx.activity:activity-ktx:$activity_version")
 }

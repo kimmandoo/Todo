@@ -1,7 +1,7 @@
 package com.challenge.todo.ui.todo_detail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.challenge.todo.R
 
 class DetailActivity : AppCompatActivity() {
