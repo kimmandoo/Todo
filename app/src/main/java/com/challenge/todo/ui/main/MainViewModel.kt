@@ -1,5 +1,6 @@
 package com.challenge.todo.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,11 @@ class MainViewModel : ViewModel() {
 
     fun checkButton(toDoItem: ToDoItem){
         toDoItem.dueDate = LocalDateTime.now().toString()
+        _toDoList.value = toDoList
+    }
+
+    fun deleteItem(position: Int) {
+        toDoList.removeAt(position)
         _toDoList.value = toDoList
     }
 }
