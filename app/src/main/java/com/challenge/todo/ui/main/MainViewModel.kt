@@ -21,13 +21,37 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             lateinit var list: List<Todo>
             withContext(Dispatchers.IO) {
-                list = todoDao.getAll().map { Todo(it.id,it.title, it.content, it.date!!, TodoState.ALL) }
+                list = todoDao.getAll()
+                    .map { Todo(it.id, it.title, it.content, it.date!!, TodoState.ALL) }
             }
             _todoList.value = list
         }
     }
 
-    fun updateTodoItem(todoDao: TodoDao, todo: Todo){
+    fun clearTodoAll(todoDao: TodoDao) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao.clear()
+            getListFromRoomDB(todoDao)
+        }
+    }
+
+    fun deleteTodoItem(todoDao: TodoDao, todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao
+                .delete(
+                    TodoEntity(
+                        todo.id,
+                        todo.title,
+                        todo.content,
+                        todo.date,
+                        TodoState.TODO.ordinal
+                    )
+                )
+            getListFromRoomDB(todoDao)
+        }
+    }
+
+    fun updateTodoItem(todoDao: TodoDao, todo: Todo) {
         viewModelScope.launch(Dispatchers.IO) {
             todoDao
                 .update(
@@ -55,7 +79,7 @@ class MainViewModel : ViewModel() {
                         TodoState.TODO.ordinal
                     )
                 )
+            getListFromRoomDB(todoDao)
         }
-        getListFromRoomDB(todoDao)
     }
 }

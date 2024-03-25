@@ -6,4 +6,6 @@
     <string name="todo_title_hint">할 일</string>
     <string name="todo_detail_hint">내용</string>
     <string name="bs_btn_modify">수정</string>
+    <string name="bs_btn_create">등록</string>
+
 </resources>

@@ -10,6 +10,7 @@ import com.challenge.todo.data.datasource.TodoDatabase
 import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
 import com.challenge.todo.databinding.ActivityMainBinding
+import com.challenge.todo.databinding.BottomsheetCreateBinding
 import com.challenge.todo.databinding.BottomsheetDetailBinding
 import com.challenge.todo.ui.base.BaseActivity
 import com.challenge.todo.util.easyToast
@@ -22,10 +23,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
     private val todoAdapter by lazy {
         TodoAdapter(onTodoItemClick = { todo: Todo ->
             showTodoDetail(todo)
+        }, onTodoItemDelete = { todo: Todo ->
+            viewModel.deleteTodoItem(todoDBInstance.todoDao(), todo)
         })
     }
     override val viewModel: MainViewModel by viewModels()
     lateinit var todoDBInstance: TodoDatabase
+
     override fun initView() {
         todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         initUI()
@@ -37,10 +41,25 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                 }
             }
             mainFab.setOnClickListener {
+                showTodoCreate()
+            }
+        }
+    }
+
+    private fun showTodoCreate() {
+        val bottomSheetView = BottomsheetCreateBinding.inflate(layoutInflater)
+        val bottomSheetDialog = BottomSheetDialog(this@MainActivity)
+        bottomSheetDialog.apply {
+            setContentView(bottomSheetView.root)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }.show()
+        bottomSheetView.apply {
+            bsBtnCreate.setOnClickListener {
                 viewModel.insertTodoItem(
                     todoDao = todoDBInstance.todoDao(),
-                    Todo(null, "title", "content")
+                    Todo(null, bsTitle.text.toString(), bsDetail.text.toString())
                 )
+                bottomSheetDialog.dismiss()
             }
         }
     }
@@ -55,15 +74,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         bottomSheetView.apply {
             val textStamp = "${todo.date}에 등록된 메모입니다 : ${todo.state}"
             bsTvState.text = textStamp
-            bsTitle.setText(todo.title)
             bsDetail.setText(todo.content)
+            bsTitle.setText(todo.title)
             easyToast(todo.toString())
             bsBtnModify.setOnClickListener {
                 viewModel.updateTodoItem(
                     todoDao = todoDBInstance.todoDao(),
                     Todo(
                         todo.id,
-                        bsTitle.text.toString(),
+                        todo.title,
                         bsDetail.text.toString(),
                         todo.date,
                         todo.state
@@ -107,7 +126,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
 
             R.id.option_all -> {
                 Log.d(TAG, "onOptionsItemSelected: done")
-
+                viewModel.clearTodoAll(todoDBInstance.todoDao())
             }
         }
         return super.onOptionsItemSelected(item)
