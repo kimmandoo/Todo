@@ -34,7 +34,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         initUI()
         binding.apply {
-            viewModel.getListFromRoomDB(todoDao = todoDBInstance.todoDao())
+            viewModel.getAllList(todoDao = todoDBInstance.todoDao())
             lifecycleOwner?.let { lifecycleOwner ->
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
                     adapter?.submitList(todoList)

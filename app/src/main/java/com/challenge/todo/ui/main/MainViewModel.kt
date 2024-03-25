@@ -17,21 +17,26 @@ class MainViewModel : ViewModel() {
     private val _todoList = MutableLiveData<List<Todo>>()
     val todoList: LiveData<List<Todo>> = _todoList
 
-    fun getListFromRoomDB(todoDao: TodoDao) {
+    fun getAllList(todoDao: TodoDao) {
         viewModelScope.launch {
             lateinit var list: List<Todo>
             withContext(Dispatchers.IO) {
                 list = todoDao.getAll()
-                    .map { Todo(it.id, it.title, it.content, it.date!!, TodoState.ALL) }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, TodoState.TODO) }
             }
             _todoList.value = list
         }
     }
 
+    fun getTodoList(todoDao: TodoDao) {
+
+    }
+
+
     fun clearTodoAll(todoDao: TodoDao) {
         viewModelScope.launch(Dispatchers.IO) {
             todoDao.clear()
-            getListFromRoomDB(todoDao)
+            getAllList(todoDao)
         }
     }
 
@@ -44,10 +49,9 @@ class MainViewModel : ViewModel() {
                         todo.title,
                         todo.content,
                         todo.date,
-                        TodoState.TODO.ordinal
                     )
                 )
-            getListFromRoomDB(todoDao)
+            getAllList(todoDao)
         }
     }
 
@@ -64,7 +68,7 @@ class MainViewModel : ViewModel() {
                     )
                 )
         }
-        getListFromRoomDB(todoDao)
+        getAllList(todoDao)
     }
 
     fun insertTodoItem(todoDao: TodoDao, todo: Todo) {
@@ -79,7 +83,7 @@ class MainViewModel : ViewModel() {
                         TodoState.TODO.ordinal
                     )
                 )
-            getListFromRoomDB(todoDao)
+            getAllList(todoDao)
         }
     }
 }
