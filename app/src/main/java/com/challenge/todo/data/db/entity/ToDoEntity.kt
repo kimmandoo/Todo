@@ -14,5 +14,5 @@ data class ToDoEntity (
 //    @ColumnInfo var dueDate: String?,
     @ColumnInfo var isDone: Boolean
 
-){
-}
+)
+
