@@ -3,4 +3,5 @@
     <string name="add_title">제목을 입력하세요</string>
     <string name="add_content">내용을 입력하세요</string>
     <string name="add_title_textView">할 일 추가하기</string>
+    <string name="btn_add">추가</string>
 </resources>

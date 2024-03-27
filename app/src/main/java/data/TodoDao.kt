@@ -21,4 +21,7 @@ interface TodoDao {
     @Delete
     fun delete(todo: Todo)
 
+    @Query("DELETE FROM todo")
+    fun clear()
+
 }
