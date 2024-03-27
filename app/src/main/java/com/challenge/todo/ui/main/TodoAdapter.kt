@@ -10,12 +10,13 @@ import com.challenge.todo.databinding.ItemTodoMainBinding
 
 class TodoAdapter(
     private val onTodoItemClick: (todo: Todo) -> Unit = { _ -> },
-    private val onTodoItemDelete: (todo: Todo) -> Unit = { _ -> }
+    private val onTodoItemDelete: (todo: Todo) -> Unit = { _ -> },
+    private val onTodoItemChecked: (Todo, Boolean) -> Unit = { _,_-> }
 ) : ListAdapter<Todo, RecyclerView.ViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemTodoMainBinding.inflate(inflater, parent, false)
-        return TodoViewHolder(binding, onTodoItemClick, onTodoItemDelete)
+        return TodoViewHolder(binding, onTodoItemClick, onTodoItemDelete, onTodoItemChecked)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

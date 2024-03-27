@@ -14,7 +14,8 @@ private const val TAG = "TodoViewHolder"
 class TodoViewHolder(
     private val binding: ItemTodoMainBinding,
     private val onTodoItemClick: (todo: Todo) -> Unit = { _ -> },
-    private val onTodoItemDelete: (todo: Todo) -> Unit = { _ -> }
+    private val onTodoItemDelete: (todo: Todo) -> Unit = { _ -> },
+    private val onTodoItemChecked: (todo: Todo, isCkecked: Boolean) -> Unit = { _,_ -> }
 ) :
     RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
@@ -28,6 +29,10 @@ class TodoViewHolder(
         binding.apply {
             itemView.setOnClickListener {
                 onTodoItemClick(item)
+            }
+
+            itemCb.setOnClickListener{
+                onTodoItemChecked(item, itemCb.isChecked)
             }
 
             with(item) {
