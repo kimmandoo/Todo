@@ -1,25 +1,22 @@
 package com.challenge.todo.ui.main
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.challenge.todo.R
 import com.challenge.todo.data.ToDoAdapter
+import com.challenge.todo.data.ToDoApplication
 import com.challenge.todo.data.ToDoItem
+import com.challenge.todo.data.db.entity.ToDoEntity
 import com.challenge.todo.databinding.ActivityMainBinding
 import com.challenge.todo.ui.todo_detail.TodoDetailDialog
-import java.time.LocalDateTime
 
 private const val TAG = "MainActivity";
 class MainActivity : AppCompatActivity() {
@@ -28,8 +25,10 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: MainViewModel by viewModels()
-    private val todoList = arrayListOf<ToDoItem>(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
+    private val viewModel: MainViewModel by viewModels{
+        MainViewModelFactory((application as ToDoApplication).repo)
+    }
+    private val todoList = arrayListOf<ToDoItem>(ToDoItem(id = 0, title = "title", content = "content",  isDone = false))
 
     private val recycler: RecyclerView by lazy {
         binding.toDoListRecyclerview
@@ -38,38 +37,52 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val adapter = ToDoAdapter()
 
+        recycler.adapter = adapter.apply {
+            itemClickListner = object : ToDoAdapter.ItemClickListener{
+                override fun OnClick(view: View, position: Int) {
+                    val dlg = TodoDetailDialog(this@MainActivity)
+                    dlg.setOnClickListner(
+                        object : TodoDetailDialog.ButtonClickListner{
+                            override fun onRegistClick(toDoItem: ToDoEntity
+                            ) {
+                                // ToDoItem 받아옴
+                                viewModel.insert(toDoItem)
+                            }
+
+                        }
+                    )
+//                    dlg.show(viewModel.select(position))
+                }
+
+                override fun deleteItem(position: Int) {
+                    TODO("Not yet implemented")
+                }
+
+            }
+        }
         recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = ToDoAdapter(todoList, onClickCheckButton = {
-            viewModel.checkButton(it)
-        },menuInflater,this )
 
-        val toDoItemList : MutableList<ToDoItem> =
-            mutableListOf(ToDoItem(title = "title", content = "content", registerDate = "2024-02-02", dueDate = "2024-02-20", isDone = false))
-
-        Log.d(TAG, "onCreate: $toDoItemList")
-
-        viewModel._toDoList.observe(this, Observer {
-            (binding.toDoListRecyclerview.adapter as ToDoAdapter).setData(it)
+        viewModel.toDoList.observe(this, Observer{
+            todo -> todo?.let { adapter.submitList(it) }
         })
 
-//        val dataObserver: Observer<List<ToDoItem>> = Observer {
-//            items.value = it
-//            val adapter = ToDoAdapter()
-//            recycler.adapter = adapter
-//        }
+        val toDoItemList : MutableList<ToDoItem> =
+            mutableListOf(ToDoItem(
+                id = 1,
+                title = "title", content = "content",  isDone = false))
 
-//        viewModel.toDoList.observe(this, dataObserver)
 
-//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         binding.createTodoBtn.setOnClickListener {
             val dlg = TodoDetailDialog(this)
             dlg.setOnClickListner(
                 object : TodoDetailDialog.ButtonClickListner{
-                    override fun onRegistClick(toDoItem: ToDoItem) {
-                        todoList.add(toDoItem)
-                        recycler.adapter?.notifyDataSetChanged()
+                    override fun onRegistClick(toDoItem: ToDoEntity
+                    ) {
+                        // ToDoItem 받아옴
+                        viewModel.insert(toDoItem)
                     }
 
                 }
