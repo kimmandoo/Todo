@@ -8,7 +8,7 @@ data class Todo(
     val state: TodoState? =null
 )
 
-enum class TodoState(state: Int) {
+enum class TodoState(val state: Int) {
     TODO(0),
     DONE(1),
     ALL(2)

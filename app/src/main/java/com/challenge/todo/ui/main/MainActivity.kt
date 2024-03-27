@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.challenge.todo.R
@@ -24,30 +25,32 @@ private const val TAG = "MainActivity"
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.activity_main) {
     val todoStack = mutableMapOf<Int, Todo>()
-    private val todoAdapter by lazy {
-        TodoAdapter(onTodoItemClick = { todo: Todo ->
-            showTodoDetail(todo)
-        }, onTodoItemDelete = { todo: Todo ->
-            viewModel.deleteTodoItem(todoDBInstance.todoDao(), todo)
-        }, onTodoItemChecked = { todo: Todo, isChecked: Boolean ->
-            if (isChecked){
-                todoStack[todo.id!!] = todo
-            }else{
-                todoStack.remove(todo.id!!)
-            }
-            if(todoStack.isNotEmpty()){
-                binding.mainDone.visibility = View.VISIBLE
-            }else{
-                binding.mainDone.visibility = View.INVISIBLE
-            }
-            Log.d(TAG, "stack: ${todoStack.toString()}")
-            // update할 리스트에 추가하면서,  check일 때 추가하고, false일 때 뺀다.
-            // 만약 상단의 btn을 눌러 확정하면, 현재 보는 화면에서 없어지고, state가 todo에서 done으로 바뀌고, update 됨
 
-        })
-    }
     override val viewModel: MainViewModel by viewModels()
     lateinit var todoDBInstance: TodoDatabase
+
+    private val todoAdapter by lazy {
+        TodoAdapter(
+            onTodoItemClick = { todo: Todo ->
+                showTodoDetail(todo)
+            }, onTodoItemDelete = { todo: Todo ->
+                viewModel.deleteTodoItem(todoDBInstance.todoDao(), todo)
+            }, onTodoItemChecked = { todo: Todo, isChecked: Boolean ->
+                if (isChecked) {
+                    viewModel._selectList.put(todo.id!!, todo)
+//                viewModel.selectTodoList(todo)
+                } else {
+                    viewModel._selectList.remove(todo.id!!)
+//                viewModel.deselectTodoList(todo)
+                }
+
+                if (viewModel._selectList.isNotEmpty()) {
+                    binding.mainDone.visibility = View.VISIBLE
+                } else {
+                    binding.mainDone.visibility = View.INVISIBLE
+                }
+            })
+    }
 
     override fun initView() {
         todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
@@ -58,7 +61,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
                     adapter?.submitList(todoList)
                 }
+//                viewModel.selectList.observe(lifecycleOwner) { selectList ->
+//                    if (selectList.values.isNotEmpty()) {
+//                        binding.mainDone.visibility = View.VISIBLE
+//                    } else {
+//                        binding.mainDone.visibility = View.INVISIBLE
+//                    }
+//                }
             }
+
             mainFab.setOnClickListener {
                 showTodoCreate()
             }
@@ -68,11 +79,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         }
     }
 
-    private fun doneTodo(){
+    private fun doneTodo() {
         binding.mainDone.visibility = View.GONE
-        for(item in todoStack){
-            viewModel.updateTodoItem(todoDBInstance.todoDao(), item.value)
+        for (item in viewModel._selectList) {
+            viewModel.finishTodoItem(todoDBInstance.todoDao(), item.value)
         }
+        viewModel._selectList.clear()
     }
 
     private fun showTodoCreate() {
@@ -81,10 +93,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         val bottomSheetDialog = BottomSheetDialog(this@MainActivity)
         bottomSheetDialog.apply {
             setContentView(bottomSheetView.root)
-//            setOnDismissListener {
-//                val window = bottomSheetDialog.window
-//                window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-//            }
+            setOnDismissListener {
+                val window = bottomSheetDialog.window
+                window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            }
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }.show()
         bottomSheetView.apply {
@@ -143,17 +155,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         when (item.itemId) {
             R.id.option_done -> {
                 Log.d(TAG, "onOptionsItemSelected: done")
-
+                viewModel.getDoneList(todoDBInstance.todoDao())
             }
 
             R.id.option_todo -> {
                 Log.d(TAG, "onOptionsItemSelected: done")
-
+                viewModel.getTodoList(todoDBInstance.todoDao())
             }
 
             R.id.option_all -> {
                 Log.d(TAG, "onOptionsItemSelected: done")
-                viewModel.clearTodoAll(todoDBInstance.todoDao())
+                viewModel.getAllList(todoDBInstance.todoDao())
+                // viewModel.clearTodoAll(todoDBInstance.todoDao())
             }
         }
         return super.onOptionsItemSelected(item)

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.todo.R
 import com.challenge.todo.data.dto.Todo
+import com.challenge.todo.data.dto.TodoState
 import com.challenge.todo.databinding.ItemTodoMainBinding
 
 private const val TAG = "TodoViewHolder"
@@ -30,6 +31,8 @@ class TodoViewHolder(
             itemView.setOnClickListener {
                 onTodoItemClick(item)
             }
+
+            if(item.state == TodoState.DONE) itemCb.visibility = View.GONE
 
             itemCb.setOnClickListener{
                 onTodoItemChecked(item, itemCb.isChecked)
