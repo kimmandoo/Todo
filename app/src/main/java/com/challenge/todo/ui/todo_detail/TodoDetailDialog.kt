@@ -5,11 +5,9 @@ import android.view.View
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import com.challenge.todo.data.ToDoItem
+import com.challenge.todo.data.db.entity.ToDoEntity
 import com.challenge.todo.databinding.ActivityTodoDialogBinding
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.coroutines.Job
 import java.time.LocalTime
 
 class TodoDetailDialog(private val context: AppCompatActivity) {
@@ -18,7 +16,7 @@ class TodoDetailDialog(private val context: AppCompatActivity) {
     // Dialog 에는 부모 context 넣어주기
     private val dlg = Dialog(context)
 
-    fun show(item: ToDoItem?){
+    fun show(item: ToDoEntity){
         binding = ActivityTodoDialogBinding.inflate(context.layoutInflater)
 
         // 타이틀 바 제거
@@ -42,11 +40,11 @@ class TodoDetailDialog(private val context: AppCompatActivity) {
         //등록
         binding.registBtn.setOnClickListener{
             Toast.makeText(context,"등록",Toast.LENGTH_SHORT).show()
-            val toDoItem : ToDoItem = ToDoItem(
+
+            val toDoItem : ToDoEntity = ToDoEntity(
+                0,
                 binding.detailTitle.text.toString(),
                 binding.detailContent.text.toString(),
-                LocalDateTime.now().toString(),
-                null,
                 false
             )
             onClickListner.onRegistClick(toDoItem)
@@ -78,7 +76,7 @@ class TodoDetailDialog(private val context: AppCompatActivity) {
 
     private lateinit var onClickListner: ButtonClickListner
     interface ButtonClickListner {
-        fun onRegistClick(toDoItem: ToDoItem)
+        fun onRegistClick(toDoItem: ToDoEntity)
     }
 
     fun setOnClickListner(listner: ButtonClickListner){
