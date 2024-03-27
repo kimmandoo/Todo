@@ -44,6 +44,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         binding.rvTodoList.adapter = todoAdapter
+        todoAdapter.itemDeleteListener = object : TodoAdapter.ItemDeleteListener{
+            override fun onDelete(position: Int) {
+                viewModel.todoList.value?.let {
+                    viewModel.deleteTodo(db.todoDao(), it[position])
+                }
+            }
+        }
     }
 
     private fun observeTodos() {
