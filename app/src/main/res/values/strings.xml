@@ -7,5 +7,8 @@
     <string name="todo_detail_hint">내용</string>
     <string name="bs_btn_modify">수정</string>
     <string name="bs_btn_create">등록</string>
+    <string name="all_string">ALL</string>
+    <string name="todo_string">TODO</string>
+    <string name="done_string">DONE</string>
 
 </resources>

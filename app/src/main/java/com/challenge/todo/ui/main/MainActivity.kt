@@ -15,7 +15,6 @@ import com.challenge.todo.databinding.ActivityMainBinding
 import com.challenge.todo.databinding.BottomsheetCreateBinding
 import com.challenge.todo.databinding.BottomsheetDetailBinding
 import com.challenge.todo.ui.base.BaseActivity
-import com.challenge.todo.util.easyToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -25,7 +24,7 @@ private const val TAG = "MainActivity"
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.activity_main) {
 
     override val viewModel: MainViewModel by viewModels()
-    lateinit var todoDBInstance: TodoDatabase
+    private lateinit var todoDBInstance: TodoDatabase
 
     private val todoAdapter by lazy {
         TodoAdapter(
@@ -110,16 +109,16 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         }.show()
         bottomSheetView.apply {
             val state = when (todo.state) {
-                TodoState.TODO.state -> "TODO"
-                TodoState.ALL.state -> "ALL"
-                TodoState.DONE.state -> "DONE"
-                else -> {}
+                TodoState.TODO.state -> getString(R.string.todo_string)
+                TodoState.ALL.state -> getString(R.string.all_string)
+                TodoState.DONE.state -> getString(R.string.done_string)
+                else -> getString(R.string.all_string)
             }
             val textStamp = "${todo.date}에 등록된 메모입니다 : $state"
             bsTvState.text = textStamp
             bsDetail.setText(todo.content)
             bsTitle.setText(todo.title)
-            easyToast(todo.toString())
+//            easyToast(todo.toString())
             bsBtnModify.setOnClickListener {
                 viewModel.updateTodoItem(
                     todoDao = todoDBInstance.todoDao(),
