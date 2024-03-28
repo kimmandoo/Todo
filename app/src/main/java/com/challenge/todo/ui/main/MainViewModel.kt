@@ -15,22 +15,28 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val TAG = "MainViewModel"
+
 class MainViewModel : ViewModel() {
     private val _todoList = MutableLiveData<List<Todo>>()
     val todoList: LiveData<List<Todo>> = _todoList
-    val _selectList = mutableMapOf<Int, Todo>()
-//    val _selectList = MutableLiveData<MutableMap<Int, Todo>>()
-//    val selectList: LiveData<MutableMap<Int, Todo>> = _selectList
-//
-//    fun selectTodoList(todo: Todo){
-//        Log.d(TAG, "selectTodoList: ")
-//        _selectList.value?.put(todo.id!!, todo)
-//    }
-//
-//    fun deselectTodoList(todo: Todo){
-//        Log.d(TAG, "deselectTodoList: ")
-//        _selectList.value?.remove(todo.id!!)
-//    }
+
+    //    val _selectList = mutableMapOf<Int, Todo>()
+    private val _selectList = MutableLiveData<MutableMap<Int, Todo>>(mutableMapOf()) //
+    val selectList: LiveData<MutableMap<Int, Todo>> = _selectList
+
+    fun selectTodoList(todo: Todo) {
+        _selectList.value?.put(todo.id!!, todo)
+        Log.d(TAG, "todo: $todo , selectTodoList: ${_selectList.value.toString()}")
+    }
+
+    fun deselectTodoList(todo: Todo) {
+        _selectList.value?.remove(todo.id!!)
+        Log.d(TAG, "todo: $todo , deselectTodoList: ${_selectList.value.toString()}")
+    }
+
+    fun deselectAll() {
+        _selectList.value?.clear()
+    }
 
     fun getAllList(todoDao: TodoDao) {
         viewModelScope.launch {

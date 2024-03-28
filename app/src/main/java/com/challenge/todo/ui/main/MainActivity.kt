@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import com.challenge.todo.R
 import com.challenge.todo.data.datasource.TodoDatabase
 import com.challenge.todo.data.datasource.TodoDatabaseInstance
@@ -18,7 +17,6 @@ import com.challenge.todo.ui.base.BaseActivity
 import com.challenge.todo.util.easyToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import java.util.LinkedList
 
 
 private const val TAG = "MainActivity"
@@ -37,18 +35,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                 viewModel.deleteTodoItem(todoDBInstance.todoDao(), todo)
             }, onTodoItemChecked = { todo: Todo, isChecked: Boolean ->
                 if (isChecked) {
-                    viewModel._selectList.put(todo.id!!, todo)
-//                viewModel.selectTodoList(todo)
+//                    viewModel._selectList.put(todo.id!!, todo)
+                    viewModel.selectTodoList(todo)
                 } else {
-                    viewModel._selectList.remove(todo.id!!)
-//                viewModel.deselectTodoList(todo)
+//                    viewModel._selectList.remove(todo.id!!)
+                    viewModel.deselectTodoList(todo)
                 }
-
-                if (viewModel._selectList.isNotEmpty()) {
-                    binding.mainDone.visibility = View.VISIBLE
-                } else {
-                    binding.mainDone.visibility = View.INVISIBLE
-                }
+//                if (viewModel.selectList.value!!.isNotEmpty()) {
+//                    binding.mainDone.visibility = View.VISIBLE
+//                } else {
+//                    binding.mainDone.visibility = View.INVISIBLE
+//                }
             })
     }
 
@@ -61,13 +58,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
                     adapter?.submitList(todoList)
                 }
-//                viewModel.selectList.observe(lifecycleOwner) { selectList ->
-//                    if (selectList.values.isNotEmpty()) {
-//                        binding.mainDone.visibility = View.VISIBLE
-//                    } else {
-//                        binding.mainDone.visibility = View.INVISIBLE
-//                    }
-//                }
+                viewModel.selectList.observe(lifecycleOwner) { selectList ->
+                    Log.d(TAG, "initView: $selectList")
+                    if (selectList.isNotEmpty()) {
+                        binding.mainDone.visibility = View.VISIBLE
+                    } else {
+                        binding.mainDone.visibility = View.INVISIBLE
+                    }
+                }
             }
 
             mainFab.setOnClickListener {
@@ -81,10 +79,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
 
     private fun doneTodo() {
         binding.mainDone.visibility = View.GONE
-        for (item in viewModel._selectList) {
+        for (item in viewModel.selectList.value!!) {
             viewModel.finishTodoItem(todoDBInstance.todoDao(), item.value)
         }
-        viewModel._selectList.clear()
+        viewModel.deselectAll()
     }
 
     private fun showTodoCreate() {
