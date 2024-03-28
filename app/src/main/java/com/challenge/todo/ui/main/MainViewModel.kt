@@ -1,0 +1,159 @@
+package com.challenge.todo.ui.main
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.challenge.todo.data.dto.Todo
+import com.challenge.todo.data.dto.TodoState
+import com.challenge.todo.data.entity.TodoEntity
+import com.challenge.todo.domain.model.dao.TodoDao
+import com.challenge.todo.util.timeStamp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private const val TAG = "MainViewModel"
+
+class MainViewModel : ViewModel() {
+    private val _todoList = MutableLiveData<List<Todo>>()
+    val todoList: LiveData<List<Todo>> = _todoList
+    private val _selectList = MutableLiveData<MutableMap<Int, Todo>>()
+    val selectList: LiveData<MutableMap<Int, Todo>> = _selectList
+    private val map = mutableMapOf<Int, Todo>()
+
+    fun selectTodoList(todo: Todo) {
+        map[todo.id!!] = todo
+        _selectList.value = map
+        Log.d(TAG, "todo: $todo , selectTodoList: ${_selectList.value.toString()}")
+    }
+
+    fun deselectTodoList(todo: Todo) {
+        map.remove(todo.id)
+        _selectList.value = map
+        Log.d(TAG, "todo: $todo , deselectTodoList: ${_selectList.value.toString()}")
+    }
+
+    fun deselectAll() {
+        _selectList.value?.clear()
+    }
+
+    fun getAllList(todoDao: TodoDao) {
+        viewModelScope.launch {
+            val list: List<Todo>
+            withContext(Dispatchers.IO) {
+                list = todoDao.getAll()
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
+            }
+            _todoList.value = list
+        }
+    }
+
+    fun getDoneList(todoDao: TodoDao) {
+        viewModelScope.launch {
+            val list: List<Todo>
+            withContext(Dispatchers.IO) {
+                list = todoDao.getAll().filter { it.state == TodoState.DONE.state }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
+            }
+            _todoList.value = list
+        }
+    }
+
+    fun getTodoList(todoDao: TodoDao) {
+        viewModelScope.launch {
+            val list: List<Todo>
+            withContext(Dispatchers.IO) {
+                list = todoDao.getAll().filter { it.state == TodoState.TODO.state }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
+            }
+            _todoList.value = list
+        }
+    }
+
+    fun clearTodoAll(todoDao: TodoDao) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao.clear()
+            getAllList(todoDao)
+        }
+    }
+
+    fun deleteTodoItem(todoDao: TodoDao, todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao
+                .delete(
+                    TodoEntity(
+                        todo.id,
+                        todo.title,
+                        todo.content,
+                        todo.date,
+                    )
+                )
+            updateList(todoDao)
+        }
+    }
+
+    fun finishTodoItem(todoDao: TodoDao, todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao
+                .update(
+                    TodoEntity(
+                        todo.id,
+                        todo.title,
+                        todo.content,
+                        todo.date,
+                        TodoState.DONE.ordinal
+                    )
+                )
+
+            getTodoList(todoDao)
+        }
+    }
+
+    fun updateTodoItem(todoDao: TodoDao, todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao
+                .update(
+                    TodoEntity(
+                        todo.id,
+                        todo.title,
+                        todo.content,
+                        todo.date,
+                        TodoState.TODO.ordinal
+                    )
+                )
+        }
+        getAllList(todoDao)
+    }
+
+    fun insertTodoItem(todoDao: TodoDao, todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao
+                .insert(
+                    TodoEntity(
+                        null,
+                        todo.title,
+                        todo.content,
+                        timeStamp(),
+                        TodoState.TODO.ordinal
+                    )
+                )
+            updateList(todoDao)
+        }
+    }
+
+    private fun updateList(todoDao: TodoDao) {
+        with(todoDao) {
+            if (_todoList.value?.all { it.state == 0 }!!) { // TODO
+                getTodoList(this)
+            } else if (_todoList.value?.all { it.state == 1 }!!) { // DONE
+                getDoneList(this)
+            } else {
+                getAllList(this)
+            }
+        }
+    }
+
+
+}
