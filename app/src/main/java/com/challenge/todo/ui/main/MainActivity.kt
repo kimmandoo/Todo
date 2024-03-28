@@ -10,6 +10,7 @@ import com.challenge.todo.R
 import com.challenge.todo.data.datasource.TodoDatabase
 import com.challenge.todo.data.datasource.TodoDatabaseInstance
 import com.challenge.todo.data.dto.Todo
+import com.challenge.todo.data.dto.TodoState
 import com.challenge.todo.databinding.ActivityMainBinding
 import com.challenge.todo.databinding.BottomsheetCreateBinding
 import com.challenge.todo.databinding.BottomsheetDetailBinding
@@ -34,17 +35,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                 viewModel.deleteTodoItem(todoDBInstance.todoDao(), todo)
             }, onTodoItemChecked = { todo: Todo, isChecked: Boolean ->
                 if (isChecked) {
-//                    viewModel._selectList.put(todo.id!!, todo)
                     viewModel.selectTodoList(todo)
                 } else {
-//                    viewModel._selectList.remove(todo.id!!)
                     viewModel.deselectTodoList(todo)
                 }
-//                if (viewModel.selectList.value!!.isNotEmpty()) {
-//                    binding.mainDone.visibility = View.VISIBLE
-//                } else {
-//                    binding.mainDone.visibility = View.INVISIBLE
-//                }
             })
     }
 
@@ -52,7 +46,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
         todoDBInstance = TodoDatabaseInstance.getDatabase(context = applicationContext)
         initUI()
         binding.apply {
-            viewModel.getAllList(todoDao = todoDBInstance.todoDao())
+            viewModel.getTodoList(todoDao = todoDBInstance.todoDao())
             lifecycleOwner?.let { lifecycleOwner ->
                 viewModel.todoList.observe(lifecycleOwner) { todoList ->
                     adapter?.submitList(todoList)
@@ -115,7 +109,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }.show()
         bottomSheetView.apply {
-            val textStamp = "${todo.date}에 등록된 메모입니다 : ${todo.state}"
+            val state = when (todo.state) {
+                TodoState.TODO.state -> "TODO"
+                TodoState.ALL.state -> "ALL"
+                TodoState.DONE.state -> "DONE"
+                else -> {}
+            }
+            val textStamp = "${todo.date}에 등록된 메모입니다 : $state"
             bsTvState.text = textStamp
             bsDetail.setText(todo.content)
             bsTitle.setText(todo.title)

@@ -9,3 +9,6 @@ BaseActivity를 만들면 뭐가 좋은지
 callback으로 listener 넘기기, interface로 넘기기
 viewholder에 context menu 달기
 확장함수, 전역상수는 항상 좋은가?
+
+livedata를 이용해서mutablemap을 쓰려고했는데, observe를 하려고했는데 안됐다. backing field에 값을 추가하는 게 아니라
+새 값을 만들어 새 인스턴스를 backing property에 넣어줘야 새 값으로 인식해서 update된다...

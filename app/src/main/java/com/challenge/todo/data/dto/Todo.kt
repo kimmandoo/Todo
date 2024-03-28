@@ -5,7 +5,7 @@ data class Todo(
     val title: String,
     val content: String? = null,
     val date: String? = null,
-    val state: TodoState? =null
+    val state: Int? =null
 )
 
 enum class TodoState(val state: Int) {

@@ -1,9 +1,9 @@
 package com.challenge.todo.ui.main
 
-import android.util.Log
 import android.view.ContextMenu
 import android.view.MenuInflater
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.todo.R
 import com.challenge.todo.data.dto.Todo
@@ -16,7 +16,7 @@ class TodoViewHolder(
     private val binding: ItemTodoMainBinding,
     private val onTodoItemClick: (todo: Todo) -> Unit = { _ -> },
     private val onTodoItemDelete: (todo: Todo) -> Unit = { _ -> },
-    private val onTodoItemChecked: (todo: Todo, isCkecked: Boolean) -> Unit = { _,_ -> }
+    private val onTodoItemChecked: (todo: Todo, isChecked: Boolean) -> Unit = { _, _ -> }
 ) :
     RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
@@ -32,8 +32,7 @@ class TodoViewHolder(
                 onTodoItemClick(item)
             }
 
-            if(item.state == TodoState.DONE) itemCb.visibility = View.GONE
-
+            itemCb.isVisible = item.state != TodoState.DONE.state
             itemCb.setOnClickListener{
                 onTodoItemChecked(item, itemCb.isChecked)
             }

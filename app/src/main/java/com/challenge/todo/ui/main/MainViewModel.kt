@@ -19,11 +19,9 @@ private const val TAG = "MainViewModel"
 class MainViewModel : ViewModel() {
     private val _todoList = MutableLiveData<List<Todo>>()
     val todoList: LiveData<List<Todo>> = _todoList
-
-    //    val _selectList = mutableMapOf<Int, Todo>()
     private val _selectList = MutableLiveData<MutableMap<Int, Todo>>()
     val selectList: LiveData<MutableMap<Int, Todo>> = _selectList
-    private val map = mutableMapOf<Int, Todo >()
+    private val map = mutableMapOf<Int, Todo>()
 
     fun selectTodoList(todo: Todo) {
         map[todo.id!!] = todo
@@ -43,10 +41,10 @@ class MainViewModel : ViewModel() {
 
     fun getAllList(todoDao: TodoDao) {
         viewModelScope.launch {
-            lateinit var list: List<Todo>
+            val list: List<Todo>
             withContext(Dispatchers.IO) {
                 list = todoDao.getAll()
-                    .map { Todo(it.id, it.title, it.content, it.date!!) }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
             }
             _todoList.value = list
         }
@@ -54,10 +52,10 @@ class MainViewModel : ViewModel() {
 
     fun getDoneList(todoDao: TodoDao) {
         viewModelScope.launch {
-            lateinit var list: List<Todo>
+            val list: List<Todo>
             withContext(Dispatchers.IO) {
-                list = todoDao.getAll().filter { it.state == 1 }
-                    .map { Todo(it.id, it.title, it.content, it.date!!, TodoState.DONE) }
+                list = todoDao.getAll().filter { it.state == TodoState.DONE.state }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
             }
             _todoList.value = list
         }
@@ -65,15 +63,14 @@ class MainViewModel : ViewModel() {
 
     fun getTodoList(todoDao: TodoDao) {
         viewModelScope.launch {
-            lateinit var list: List<Todo>
+            val list: List<Todo>
             withContext(Dispatchers.IO) {
-                list = todoDao.getAll().filter { it.state == 0 }
-                    .map { Todo(it.id, it.title, it.content, it.date!!, TodoState.TODO) }
+                list = todoDao.getAll().filter { it.state == TodoState.TODO.state }
+                    .map { Todo(it.id, it.title, it.content, it.date!!, it.state) }
             }
             _todoList.value = list
         }
     }
-
 
     fun clearTodoAll(todoDao: TodoDao) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -93,7 +90,7 @@ class MainViewModel : ViewModel() {
                         todo.date,
                     )
                 )
-            getAllList(todoDao)
+            updateList(todoDao)
         }
     }
 
@@ -109,8 +106,9 @@ class MainViewModel : ViewModel() {
                         TodoState.DONE.ordinal
                     )
                 )
+
+            getTodoList(todoDao)
         }
-        getAllList(todoDao)
     }
 
     fun updateTodoItem(todoDao: TodoDao, todo: Todo) {
@@ -141,7 +139,19 @@ class MainViewModel : ViewModel() {
                         TodoState.TODO.ordinal
                     )
                 )
-            getAllList(todoDao)
+            updateList(todoDao)
+        }
+    }
+
+    private fun updateList(todoDao: TodoDao) {
+        with(todoDao) {
+            if (_todoList.value?.all { it.state == 0 }!!) { // TODO
+                getTodoList(this)
+            } else if (_todoList.value?.all { it.state == 1 }!!) { // DONE
+                getDoneList(this)
+            } else {
+                getAllList(this)
+            }
         }
     }
 
