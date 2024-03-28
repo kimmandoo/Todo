@@ -21,16 +21,19 @@ class MainViewModel : ViewModel() {
     val todoList: LiveData<List<Todo>> = _todoList
 
     //    val _selectList = mutableMapOf<Int, Todo>()
-    private val _selectList = MutableLiveData<MutableMap<Int, Todo>>(mutableMapOf()) //
+    private val _selectList = MutableLiveData<MutableMap<Int, Todo>>()
     val selectList: LiveData<MutableMap<Int, Todo>> = _selectList
+    private val map = mutableMapOf<Int, Todo >()
 
     fun selectTodoList(todo: Todo) {
-        _selectList.value?.put(todo.id!!, todo)
+        map[todo.id!!] = todo
+        _selectList.value = map
         Log.d(TAG, "todo: $todo , selectTodoList: ${_selectList.value.toString()}")
     }
 
     fun deselectTodoList(todo: Todo) {
-        _selectList.value?.remove(todo.id!!)
+        map.remove(todo.id)
+        _selectList.value = map
         Log.d(TAG, "todo: $todo , deselectTodoList: ${_selectList.value.toString()}")
     }
 

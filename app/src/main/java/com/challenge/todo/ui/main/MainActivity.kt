@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 private const val TAG = "MainActivity"
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.activity_main) {
-    val todoStack = mutableMapOf<Int, Todo>()
 
     override val viewModel: MainViewModel by viewModels()
     lateinit var todoDBInstance: TodoDatabase
